@@ -15,15 +15,12 @@ import {
 import select from './select';
 import { sleep } from './utils';
 
-export default {
+export {
   UnbufferedChannel,
   chan,
   after,
   Multicast,
   multi,
-  select
-};
-
-export {
-  sleep
+  select,
+  sleep,
 };
