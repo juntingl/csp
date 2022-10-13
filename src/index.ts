@@ -7,6 +7,7 @@
  */
 import {
   UnbufferedChannel,
+  Channel,
   chan,
   after,
   Multicast,
