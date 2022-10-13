@@ -1,5 +1,5 @@
 {
-  "name": "csp",
+  "name": "pp-csp",
   "version": "0.0.1",
   "description": "JavaScript implementation of the communication sequential process.",
   "main": "dist/csp/index.js",
