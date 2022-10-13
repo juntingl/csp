@@ -2,7 +2,11 @@
   "name": "csp",
   "version": "1.0.0",
   "description": "JavaScript implementation of the communication sequential process.",
-  "main": "index.js",
+  "main": "dist/csp/index.js",
+  "typings": "dist/csp/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
