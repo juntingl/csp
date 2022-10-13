@@ -1,6 +1,6 @@
 /**
  * Base
- * @desc: 两种基本方法，所有类型 Channel 必须实现
+ * @desc 两种基本方法，所有类型 Channel 必须实现
  */
 interface Base {
   /**
@@ -15,7 +15,7 @@ interface Base {
 
 /**
  * PopChannel
- * @desc: 接收数据唯一方法
+ * @desc 接收数据唯一方法
  */
 export interface PopChannel<T> extends Base {
   /**
@@ -26,7 +26,7 @@ export interface PopChannel<T> extends Base {
 
 /**
  * PutChannel
- * @desc: 发送数据唯一方式
+ * @desc 发送数据唯一方式
  */
 export interface PutChannel<T> extends Base {
   /**
@@ -52,14 +52,14 @@ export interface BaseChannel<T> extends PopChannel<T>, PutChannel<T> { }
 
 /**
  * Channel
- * @desc: Channel 实现类型要求，要是一个异步迭代器
+ * @desc Channel 实现类型要求，要是一个异步迭代器
  */
 export interface Channel<T> extends SelectableChannel<T>, PutChannel<T>, AsyncIterableIterator<T> { }
 
 export type ResolveValue<T> = { value: undefined; done: true } | { value: T; done: false };
 /**
  * PopperOnResolver
- * @desc: 消费者数据类型
+ * @desc 消费者数据类型
  */
 export interface PopperOnResolver<T> {
   (ele: ResolveValue<T>): void;
@@ -67,11 +67,19 @@ export interface PopperOnResolver<T> {
 
 /**
  * UnreachableError
- * @desc: 无法到达的错误
+ * @desc 无法到达的错误
  */
 export class UnreachableError extends Error {
   constructor(msg: string) {
     super(msg);
     this.name = UnreachableError.name;
   }
+}
+
+export interface onSelect<T, R> {
+  (ele: T | undefined): Promise<R>;
+}
+
+export interface DefaultCase<T> {
+  (): Promise<T>;
 }

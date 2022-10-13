@@ -3,14 +3,17 @@
  * @Author: Junting
  * @Date: 2022-10-13 09:28:31
  * @Last Modified by: Junting
- * @Last Modified time: 2022-10-13 09:59:43
+ * @Last Modified time: 2022-10-13 23:20:29
  */
 
 import type { Channel, PopperOnResolver, ResolveValue } from "./types";
 
+import { MAX_INT_32 } from "./constants";
+import { sleep } from "./utils";
+
 /**
  * UnbufferedChannel
- * @desc: 无缓冲区的 Channel，缓冲区大小为 0 的 channel，所以在 pop()/put() 会有阻塞。
+ * @desc 无缓冲区的 Channel，缓冲区大小为 0 的 channel，所以在 pop()/put() 会有阻塞。
  */
 export class UnbufferedChannel<T> implements Channel<T> {
   // channel 关闭标志
@@ -148,4 +151,56 @@ export class UnbufferedChannel<T> implements Channel<T> {
 // 为什么缩写名称为 chan？ 别问，问就是流行，哼 👻。
 export function chan<T>() {
   return new UnbufferedChannel<T>();
+}
+
+export function after(delay: number) {
+  if (0 > delay || delay > MAX_INT_32) {
+    throw new Error(`${delay} is out of int32 bound or is negative number.`);
+  }
+  const chan = new UnbufferedChannel<number>();
+
+  async function execute () {
+    await sleep(delay);
+    await chan.put(delay);
+  }
+  execute();
+  return chan;
+}
+
+export class Multicast<T> {
+  public listeners: UnbufferedChannel<T | undefined>[] = [];
+
+  constructor(public source: Channel<T>) {
+    (async () => {
+      // 轮询起飞 🛫️
+      while(true) {
+        if (source.closed()) {
+          for (let listener of this.listeners) {
+            listener.close();
+          }
+          return;
+        }
+
+        const data = await source.pop();
+
+        for (let listener of this.listeners) {
+          if (listener.closed()) {
+            continue;
+          }
+          listener.put(data);
+        }
+      }
+    })();
+  }
+
+  // 复制一个 channel
+  copy(): Channel<T | undefined> {
+    const chan = new UnbufferedChannel<T | undefined>();
+    this.listeners.push(chan);
+    return chan;
+  }
+}
+
+export function multi<T>(c: Channel<T>): Multicast<T> {
+  return new Multicast(c);
 }
