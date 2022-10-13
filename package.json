@@ -12,5 +12,8 @@
     "Channel"
   ],
   "author": "Junting <342766475@qq.com> (https://github.com/JuntingLiu)",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.8.4"
+  }
 }
