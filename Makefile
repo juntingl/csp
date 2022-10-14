@@ -3,6 +3,9 @@ f = *
 init:
 	pnpm install
 
+test:
+	$$(pnpm bin)/mocha -r ts-node/register test/$(f).test.ts --timeout 200 --slow 10 --check-leaks
+
 build: compile
 
 compile:
